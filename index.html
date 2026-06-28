@@ -695,8 +695,7 @@ textarea{resize:vertical;min-height:80px}
 <!-- MODAL KELUHAN -->
 <div class="modal-overlay" id="modal-keluhan">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>📢 Laporkan Keluhan</h2>
+    <div class="modal-handle"></div><h2>📢 Laporkan Keluhan</h2>
     <div style="background:#fee2e2;border-radius:var(--rsm);padding:10px;margin-bottom:12px;font-size:12px;color:#991b1b">
       Kami akan menangani keluhan Anda dalam 1x24 jam kerja.
     </div>
@@ -704,7 +703,8 @@ textarea{resize:vertical;min-height:80px}
     <input type="text" id="kl-nopesanan" placeholder="Contoh: ABC123">
     <label>Jenis keluhan</label>
     <select id="kl-jenis">
-      <option value="kualitas">Kualitas produk tidak sesuai</option><option value="salahkirim">Produk yang dikirim salah</option>
+      <option value="kualitas">Kualitas produk tidak sesuai</option>
+      <option value="salahkirim">Produk yang dikirim salah</option>
       <option value="terlambat">Pengiriman terlambat</option>
       <option value="rusak">Produk rusak / cacat</option>
       <option value="lain">Lainnya</option>
@@ -1392,8 +1392,7 @@ function updateStats(){
 }
 
 
-// ============================================================
-// FOTO PRODUK
+// ============================================================// FOTO PRODUK
 // ============================================================
 function previewFotoProduk(){
   const file=document.getElementById('tp-foto-input').files[0];
@@ -1410,7 +1409,8 @@ function previewFotoProduk(){
   reader.readAsDataURL(file);
 }
 
-function clearFotoProduk(){document.getElementById('tp-foto-data').value='';
+function clearFotoProduk(){
+  document.getElementById('tp-foto-data').value='';
   document.getElementById('tp-foto-img').src='';
   document.getElementById('tp-foto-img').style.display='none';
   document.getElementById('tp-foto-placeholder').style.display='block';
@@ -1554,34 +1554,7 @@ document.addEventListener('DOMContentLoaded',function(){
 // ============================================================
 // WA ADMIN
 // ============================================================
-function renderWAAdmin(){
-  const el=document.getElementById('wa-admin-list');
-  if(!el) return;
-  if(!waAdminList.length){ el.innerHTML='<div style="font-size:12px;color:var(--text3)">Belum ada nomor</div>'; return; }
-  el.innerHTML=waAdminList.map((w,i)=>`
-    <div class="wa-item">
-      <div><div style="font-size:13px;font-weight:600">${w.nama}</div><div style="font-size:12px;color:var(--text2)">${w.no}</div></div>
-      <button class="btn btn-danger btn-sm" onclick="hapusWA(${i})">Hapus</button>
-    </div>`).join('');
-}
 
-function tambahWAAdmin(){
-  const nama=document.getElementById('wa-nama').value.trim();
-  const no  =document.getElementById('wa-no').value.trim();
-  if(!nama||!no){ alert('Nama dan No. WA harus diisi'); return; }
-  waAdminList.push({id:Date.now(),nama,no});
-  saveAll(); renderWAAdmin();
-  document.getElementById('wa-nama').value='';
-  document.getElementById('wa-no').value='';
-  notif('✅ No. WA ditambahkan!');
-}
-
-function hapusWA(i){
-  if(waAdminList.length<=1){ alert('Minimal harus ada 1 nomor!'); return; }
-  if(!confirm('Hapus nomor ini?')) return;
-  waAdminList.splice(i,1); saveAll(); renderWAAdmin();
-  notif('🗑️ Nomor dihapus');
-}
 
 // ============================================================
 // FEEDBACK: SAMPLE, MASUKAN, KELUHAN
