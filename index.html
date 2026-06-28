@@ -269,6 +269,7 @@ textarea{resize:vertical;min-height:80px}
 
 <!-- ===== PROFIL / ADMIN ===== -->
 <div class="page" id="page-profil">
+
   <!-- CUSTOMER -->
   <div id="profil-customer" style="display:none">
     <div class="card"><div class="card-body" style="text-align:center">
@@ -278,6 +279,64 @@ textarea{resize:vertical;min-height:80px}
       <div style="margin-top:10px"><span class="badge b-green">Customer</span></div>
     </div></div>
     <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- OWNER -->
+  <div id="profil-owner" style="display:none">
+    <div class="card" style="background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff">
+      <div class="card-body">
+        <div style="font-size:12px;opacity:.7">Login sebagai</div>
+        <div style="font-size:18px;font-weight:700;margin-top:2px" id="owner-label">Owner</div>
+        <div style="margin-top:8px"><span style="background:rgba(245,158,11,.25);color:#fbbf24;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">OWNER / ADMIN UTAMA</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-body">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📊 Statistik</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)"><div style="font-size:20px;font-weight:700;color:var(--primary)" id="stat-total">0</div><div style="font-size:11px;color:var(--text2)">Total Order</div></div>
+        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)"><div style="font-size:20px;font-weight:700;color:var(--warn)" id="stat-pending">0</div><div style="font-size:11px;color:var(--text2)">Pending</div></div>
+        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)"><div style="font-size:20px;font-weight:700;color:var(--secondary)" id="stat-selesai">0</div><div style="font-size:11px;color:var(--text2)">Selesai</div></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📱 No. WA Notifikasi</div>
+      <div id="wa-admin-list"></div>
+      <div style="background:var(--bg);border-radius:var(--rsm);padding:12px;margin-top:8px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text2)">+ Tambah Nomor Baru</div>
+        <input type="text" id="wa-nama-inline" placeholder="Nama admin/staff" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box">
+        <input type="tel" id="wa-no-inline" placeholder="628xxxxxxxxxx" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box">
+        <button style="width:100%;padding:10px;background:#10b981;border:none;border-radius:var(--rsm);color:#fff;font-size:13px;font-weight:600;cursor:pointer" onclick="tambahWAInline()">+ Simpan Nomor</button>
+      </div>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">⚙️ Kelola</div>
+      <button class="btn btn-primary" style="margin-bottom:8px" onclick="showPage('admin-katalog')">📦 Kelola Katalog Produk</button>
+      <button class="btn btn-secondary" style="margin-bottom:8px" onclick="showPage('pesanan')">📋 Kelola Semua Pesanan</button>
+      <button class="btn btn-secondary" style="margin-bottom:8px" onclick="showPage('layanan')">💬 Lihat Semua Feedback</button>
+      <button class="btn btn-secondary" onclick="showPengaturanToko()">🎨 Pengaturan Tampilan Toko</button>
+    </div></div>
+    <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- ADMIN KATALOG -->
+  <div id="profil-katalog" style="display:none">
+    <div class="card" style="background:linear-gradient(135deg,#065f46,#10b981);color:#fff">
+      <div class="card-body">
+        <div style="font-size:12px;opacity:.7">Login sebagai</div>
+        <div style="font-size:18px;font-weight:700;margin-top:2px" id="katalog-label">Admin Katalog</div>
+        <div style="margin-top:8px"><span style="background:rgba(255,255,255,.2);color:#fff;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">ADMIN KATALOG</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-body">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        ✅ Tambah &amp; edit produk<br>
+        ✅ Kelola varian warna &amp; foto<br>
+        ✅ Update stok per warna<br>
+        ❌ Tidak bisa lihat pesanan customer
+      </div>
+    </div></div>
+    <button class="btn btn-success" onclick="showPage('admin-katalog')">📦 Buka Panel Katalog</button>
+    <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger);margin-top:8px" onclick="logout()">Logout</button>
   </div>
 
   <!-- ADMIN -->
@@ -695,7 +754,8 @@ textarea{resize:vertical;min-height:80px}
       <span class="star" onclick="setRating(5)" id="star-5">★</span>
     </div>
     <button class="btn btn-primary" style="margin-top:14px" onclick="kirimMasukan()">Kirim Masukan</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-masukan')">Batal</button></div>
+    <button class="btn btn-secondary" onclick="closeModal('modal-masukan')">Batal</button>
+  </div>
 </div>
 
 <!-- MODAL KELUHAN -->
@@ -735,8 +795,7 @@ textarea{resize:vertical;min-height:80px}
 
 <!-- MODAL DETAIL FEEDBACK (ADMIN) -->
 <div class="modal-overlay" id="modal-feedback-detail">
-  <div class="modal">
-    <div class="modal-handle"></div>
+  <div class="modal"><div class="modal-handle"></div>
     <h2>Detail Feedback</h2>
     <div id="modal-feedback-content"></div>
     <button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal('modal-feedback-detail')">Tutup</button>
@@ -798,6 +857,10 @@ function saveAll(){
 // HELPERS
 // ============================================================
 function fRp(v){ return 'Rp '+Math.round(v).toLocaleString('id-ID'); }
+function isOwner(){ return currentUser && currentUser.role==='owner'; }
+function isKatalog(){ return currentUser && currentUser.role==='katalog'; }
+function isAdmin(){ return currentUser && (currentUser.role==='owner' || currentUser.role==='katalog' || currentUser.type==='admin'); }
+
 function notif(m){ const e=document.getElementById('notif'); e.textContent=m; e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),2500); }
 
 function bukaModalWA(){ showModal('modal-tambah-wa'); renderWAAdmin(); }
@@ -1392,7 +1455,8 @@ function kirimKeluhan(){
   renderFeedbackList();
 }
 
-function renderFeedbackList(){const el=document.getElementById('feedback-list');
+function renderFeedbackList(){
+  const el=document.getElementById('feedback-list');
   let list=feedbackList;
   if(currentUser?.type==='customer') list=list.filter(f=>f.customer.wa===currentUser.wa);
   if(!list.length){ el.innerHTML='<div class="empty"><div class="ico">💬</div><p>Belum ada pengajuan</p></div>'; return; }
@@ -1456,7 +1520,7 @@ function showAdminFeedback(){
 // STATS
 // ============================================================
 function updateStats(){
-  if(currentUser?.type!=='admin') return;
+  if(!isOwner()) return;
   document.getElementById('stat-total').textContent   =pesananList.length;
   document.getElementById('stat-pending').textContent =pesananList.filter(p=>p.status==='pending').length;
   document.getElementById('stat-selesai').textContent =pesananList.filter(p=>p.status==='selesai').length;
@@ -1528,8 +1592,7 @@ function openWarnaModal(id){
   document.getElementById('wn-color-hex').value='#ffffff';
   document.getElementById('wn-stok').value='0';
   document.getElementById('wn-foto-preview').style.display='none';
-  warnaFotoData=null;
-  showModal('modal-warna');
+  warnaFotoData=null;showModal('modal-warna');
 }
 
 function renderWarnaListAdmin(){
