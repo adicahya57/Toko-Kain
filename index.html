@@ -319,12 +319,19 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div></div>
 
-    <!-- Kelola WA Admin -->
+    <!-- Kelola WA Admin - INLINE (no modal) -->
     <div class="card"><div class="card-body">
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📱 No. WA Penerima Notifikasi</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📱 No. WA Notifikasi</div>
       <div id="wa-admin-list"></div>
-      <button class="btn btn-success btn-sm" style="margin-top:8px" onclick="showModal('modal-tambah-wa')">+ Tambah No. WA</button>
-      <div style="font-size:11px;color:var(--text3);margin-top:8px">Semua nomor ini akan mendapat notifikasi pesanan & feedback baru</div>
+      <div style="background:var(--bg);border-radius:var(--rsm);padding:12px;margin-top:8px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text2)">+ Tambah Nomor Baru</div>
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:3px">Nama admin/staff</label>
+        <input type="text" id="wa-nama-inline" placeholder="Nama" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;color:var(--text);font-size:13px;margin-bottom:8px">
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:3px">No. WA (format 628xxx)</label>
+        <input type="tel" id="wa-no-inline" placeholder="628xxxxxxxxxx" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;color:var(--text);font-size:13px;margin-bottom:8px">
+        <button style="width:100%;padding:10px;background:var(--secondary);border:none;border-radius:var(--rsm);color:#fff;font-size:13px;font-weight:600;cursor:pointer" onclick="tambahWAInline()">+ Simpan Nomor</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px">Semua nomor mendapat notifikasi pesanan & feedback</div>
     </div></div>
 
     <!-- Kelola -->
@@ -688,14 +695,14 @@ textarea{resize:vertical;min-height:80px}
       <span class="star" onclick="setRating(5)" id="star-5">★</span>
     </div>
     <button class="btn btn-primary" style="margin-top:14px" onclick="kirimMasukan()">Kirim Masukan</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-masukan')">Batal</button>
-  </div>
+    <button class="btn btn-secondary" onclick="closeModal('modal-masukan')">Batal</button></div>
 </div>
 
 <!-- MODAL KELUHAN -->
 <div class="modal-overlay" id="modal-keluhan">
   <div class="modal">
-    <div class="modal-handle"></div><h2>📢 Laporkan Keluhan</h2>
+    <div class="modal-handle"></div>
+    <h2>📢 Laporkan Keluhan</h2>
     <div style="background:#fee2e2;border-radius:var(--rsm);padding:10px;margin-bottom:12px;font-size:12px;color:#991b1b">
       Kami akan menangani keluhan Anda dalam 1x24 jam kerja.
     </div>
@@ -1172,13 +1179,40 @@ function showPesananDetail(id){
 // WA ADMIN
 // ============================================================
 function renderWAAdmin(){
-  const el=document.getElementById('wa-admin-list');
-  if(!waAdminList.length){ el.innerHTML='<div style="font-size:12px;color:var(--text3)">Belum ada nomor admin</div>'; return; }
-  el.innerHTML=waAdminList.map((w,i)=>`
-    <div class="wa-item">
-      <div><div class="wn">${w.nama}</div><div class="wp">${w.no}</div></div>
-      <button class="btn btn-danger btn-sm" onclick="hapusWA(${i})">Hapus</button>
-    </div>`).join('');
+  var el=document.getElementById('wa-admin-list');
+  if(!el) return;
+  if(!waAdminList.length){
+    el.innerHTML='<div style="font-size:12px;color:#9ca3af;padding:8px 0">Belum ada nomor</div>';
+    return;
+  }
+  var html='';
+  for(var i=0;i<waAdminList.length;i++){
+    var w=waAdminList[i];
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:8px;background:#f0f2f5;border-radius:8px;margin-bottom:6px">'+
+      '<div style="flex:1">'+
+        '<div style="font-size:13px;font-weight:600">'+w.nama+'</div>'+
+        '<div style="font-size:12px;color:#6b7280">'+w.no+'</div>'+
+      '</div>'+
+      '<button style="padding:5px 12px;background:#ef4444;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer" onclick="hapusWA('+i+')">Hapus</button>'+
+    '</div>';
+  }
+  el.innerHTML=html;
+}
+
+function tambahWAInline(){
+  var nama=document.getElementById('wa-nama-inline');
+  var no=document.getElementById('wa-no-inline');
+  if(!nama||!no) return;
+  var n=nama.value.trim();
+  var p=no.value.trim();
+  if(!n){ alert('Nama harus diisi'); return; }
+  if(!p){ alert('No. WA harus diisi'); return; }
+  if(p.startsWith('0')) p='62'+p.substring(1);
+  if(!p.startsWith('62')){ alert('Format: 628122039878'); return; }
+  waAdminList.push({id:Date.now(),nama:n,no:p});
+  saveAll(); renderWAAdmin();
+  nama.value=''; no.value='';
+  notif('Nomor WA ditambahkan!');
 }
 
 function tambahWAAdmin(){
@@ -1358,8 +1392,7 @@ function renderFeedbackList(){
       <div style="font-size:12px;color:var(--text2);margin-bottom:4px">👤 ${f.customer.nama} | 📅 ${tglFmt(f.tgl)}</div>
       <div style="font-size:13px;color:var(--text)">${(f.isi||f.desc||f.detail||'').substring(0,60)}...</div>
       ${f.rating?`<div style="font-size:14px;margin-top:4px">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</div>`:''}
-    </div>`).join('');
-}
+    </div>`).join('');}
 
 function showFeedbackDetail(id){
   const f=feedbackList.find(x=>x.id===id); if(!f) return;
@@ -1392,7 +1425,8 @@ function showFeedbackDetail(id){
       <button class="btn btn-success btn-sm" onclick="hubungiCustomerFeedback('${f.id}')">💬 Balas via WA</button>
     </div>`;
   }
-  document.getElementById('modal-feedback-content').innerHTML=content;showModal('modal-feedback-detail');
+  document.getElementById('modal-feedback-content').innerHTML=content;
+  showModal('modal-feedback-detail');
 }
 
 function hubungiCustomerFeedback(id){
