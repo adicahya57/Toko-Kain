@@ -19,7 +19,7 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
   font-size:14px;background:var(--bg);color:var(--text);min-height:100vh;
-  padding-bottom:80px}
+  padding-bottom:80px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .topbar{background:var(--primary);padding:14px 16px;position:sticky;top:0;z-index:200;
   box-shadow:0 2px 10px rgba(37,99,235,.3)}
 .topbar-inner{display:flex;align-items:center;justify-content:space-between;max-width:500px;margin:0 auto}
@@ -39,7 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
 .nav-item.active{color:var(--primary)}
 .nav-item svg{width:20px;height:20px}
 .page{display:none;max-width:500px;margin:0 auto;padding:14px}
-.page.active{display:block}
+.page.active{display:block;overflow-y:auto}
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
 .card-body{padding:14px}
 .produk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -77,7 +77,7 @@ textarea{resize:vertical;min-height:80px}
   padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .search-box input{border:none;padding:0;font-size:14px;flex:1}
 .search-box input:focus{outline:none}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;overflow:hidden}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:92vh;overflow-y:auto}
 .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px}
@@ -812,12 +812,20 @@ const ROL_KG      = 25;
 const ADMIN_USER  = 'admin';
 const ADMIN_PASS  = 'kain2024';
 
-let currentUser = null;
-let curFilter   = 'semua';
-let selProduk   = null;
-let modalQty    = 1;
-let editProdukId= null;
-let rating      = 0;
+let currentUser      = null;
+let curFilter        = 'semua';
+let selProduk        = null;
+let modalQty         = 1;
+let editProdukId     = null;
+let editWarnaProdukId= null;
+let warnaFotoData    = null;
+let rating           = 0;
+let kategoriList     = JSON.parse(localStorage.getItem('tk_kategori') || 'null') || [
+  {id:'polyester', nama:'Polyester', icon:'🔵'},
+  {id:'cotton',    nama:'Cotton',    icon:'🌿'},
+  {id:'rayon',     nama:'Rayon',     icon:'👗'},
+  {id:'spandek',   nama:'Spandek',   icon:'🤸'},
+];
 
 let tokoSettings = JSON.parse(localStorage.getItem('tk_settings') || 'null') || {
   nama:       'Toko Kain',
@@ -853,6 +861,7 @@ function saveAll(){
   localStorage.setItem('tk_pesanan',   JSON.stringify(pesananList));
   localStorage.setItem('tk_feedback',  JSON.stringify(feedbackList));
   localStorage.setItem('tk_keranjang', JSON.stringify(keranjang));
+  localStorage.setItem('tk_kategori',  JSON.stringify(kategoriList));
 }
 
 // ============================================================
@@ -873,8 +882,12 @@ function bukaModalProduk(){
   showModal('modal-tambah-produk'); 
 }
 function bukaModalAdminLogin(){ showModal('modal-admin-login'); }
-function showModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function showModal(id){ 
+  document.getElementById(id).classList.add('show'); 
+}
+function closeModal(id){ 
+  document.getElementById(id).classList.remove('show'); 
+}
 function showModalKategori(){ renderKategoriListAdmin(); showModal('modal-kategori'); }
 function genId(){ return Date.now().toString(36).toUpperCase(); }
 function tglFmt(ts){ const d=new Date(ts); return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }
