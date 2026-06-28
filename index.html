@@ -487,8 +487,10 @@ textarea{resize:vertical;min-height:80px}
   <div class="modal">
     <div class="modal-handle"></div>
     <h2>🔐 Login Admin</h2>
-    <label>Username</label><input type="text" id="adm-user" placeholder="admin">
-    <label>Password</label><input type="password" id="adm-pass" placeholder="••••••">
+    <label>Username</label>
+    <input type="text" id="adm-user" placeholder="admin" onkeypress="if(event.key==='Enter')loginAdmin()">
+    <label>Password</label>
+    <input type="password" id="adm-pass" placeholder="••••••" onkeypress="if(event.key==='Enter')loginAdmin()">
     <button class="btn btn-primary" style="margin-top:14px" onclick="loginAdmin()">Masuk</button>
     <button class="btn btn-secondary" onclick="closeModal('modal-admin-login')">Batal</button>
   </div>
@@ -793,9 +795,9 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- MODAL DETAIL FEEDBACK (ADMIN) -->
-<div class="modal-overlay" id="modal-feedback-detail">
-  <div class="modal"><div class="modal-handle"></div>
+<!-- MODAL DETAIL FEEDBACK (ADMIN) --><div class="modal-overlay" id="modal-feedback-detail">
+  <div class="modal">
+    <div class="modal-handle"></div>
     <h2>Detail Feedback</h2>
     <div id="modal-feedback-content"></div>
     <button class="btn btn-secondary" style="margin-top:12px" onclick="closeModal('modal-feedback-detail')">Tutup</button>
@@ -965,6 +967,20 @@ function afterLogin(){
     if(navPesanan) navPesanan.style.display='flex';
     if(navLayanan) navLayanan.style.display='flex';
   }
+
+  // Hide login page, show app
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  applySettings();
+  renderFilterTabs();
+  renderKategoriSelect();
+  updateCartBadge();
+  if(currentUser.role==='katalog'){
+    showPage('admin-katalog');
+    renderAdminKatalog();
+  } else {
+    showPage('katalog');
+    renderProduk();
+  }
 }
 
 function logout(){
@@ -987,11 +1003,15 @@ function showPage(page){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+page)?.classList.add('active');
   document.getElementById('nav-'+page)?.classList.add('active');
+  if(page==='katalog')   renderProduk();
   if(page==='keranjang') renderKeranjang();
   if(page==='pesanan')   renderPesanan();
   if(page==='checkout')  renderCheckout();
-  if(page==='profil')    { updateStats(); renderWAAdmin(); }
+  if(page==='profil'){
+    if(isOwner()){ updateStats(); renderWAAdmin(); }
+  }
   if(page==='layanan')   { renderFeedbackList(); populateSampleProduk(); }
+  if(page==='admin-katalog') renderAdminKatalog();
 }
 
 // ============================================================
@@ -1572,8 +1592,7 @@ function updateHargaPreview(){
 // TOGGLE AKTIF PRODUK
 // ============================================================
 function toggleAktif(id){
-  const p=produkList.find(x=>x.id===id); if(!p) return;
-  p.aktif=!p.aktif;
+  const p=produkList.find(x=>x.id===id); if(!p) return;p.aktif=!p.aktif;
   saveAll(); renderProduk(); renderAdminKatalog();
   notif(p.aktif?'✅ Produk diaktifkan':'⛔ Produk dinonaktifkan');
 }
@@ -1592,7 +1611,8 @@ function openWarnaModal(id){
   document.getElementById('wn-color-hex').value='#ffffff';
   document.getElementById('wn-stok').value='0';
   document.getElementById('wn-foto-preview').style.display='none';
-  warnaFotoData=null;showModal('modal-warna');
+  warnaFotoData=null;
+  showModal('modal-warna');
 }
 
 function renderWarnaListAdmin(){
@@ -2216,9 +2236,16 @@ function hapusKategori(id){
 // INIT
 // ============================================================
 window.onload=function(){
+  renderFilterTabs();
+  renderKategoriSelect();
+  applySettings();
   const saved=localStorage.getItem('tk_user');
-  if(saved){ currentUser=JSON.parse(saved); afterLogin(); }
-  else { document.getElementById('page-login').classList.add('active'); }
+  if(saved){
+    currentUser=JSON.parse(saved);
+    afterLogin();
+  } else {
+    document.getElementById('page-login').classList.add('active');
+  }
 };
 
 document.querySelectorAll('.modal-overlay').forEach(el=>{
