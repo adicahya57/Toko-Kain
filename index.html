@@ -1,701 +1,701 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Toko Kain">
-<meta name="theme-color" content="#2563eb">
-<title>Toko Kain - Pemesanan Online</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#f0f2f5;--white:#fff;--primary:#2563eb;--primary-dark:#1d4ed8;
-  --secondary:#10b981;--danger:#ef4444;--warn:#f59e0b;--purple:#7c3aed;
-  --text:#1f2937;--text2:#6b7280;--text3:#9ca3af;
-  --border:#e5e7eb;--shadow:0 2px 8px rgba(0,0,0,.08);
-  --radius:12px;--rsm:8px;
+// FOTO PRODUK
+// ============================================================
+function previewFotoProduk(){
+  const file=document.getElementById('tp-foto-input').files[0];
+  if(!file) return;
+  if(file.size > 5*1024*1024){ alert('Ukuran foto maksimal 5MB'); return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('tp-foto-data').value=e.target.result;
+    document.getElementById('tp-foto-img').src=e.target.result;
+    document.getElementById('tp-foto-img').style.display='block';
+    document.getElementById('tp-foto-placeholder').style.display='none';
+    document.getElementById('tp-foto-clear').style.display='block';
+  };
+  reader.readAsDataURL(file);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
-  font-size:14px;background:var(--bg);color:var(--text);min-height:100vh;
-  padding-bottom:80px}
-.topbar{background:var(--primary);padding:14px 16px;position:sticky;top:0;z-index:200;
-  box-shadow:0 2px 10px rgba(37,99,235,.3)}
-.topbar-inner{display:flex;align-items:center;justify-content:space-between;max-width:500px;margin:0 auto}
-.topbar h1{font-size:18px;font-weight:700;color:#fff}
-.topbar p{font-size:11px;color:rgba(255,255,255,.8)}
-.cart-btn{position:relative;background:rgba(255,255,255,.2);border:none;border-radius:var(--rsm);
-  padding:8px 12px;color:#fff;cursor:pointer;font-size:13px}
-.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;
-  border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;
-  align-items:center;justify-content:center;font-weight:700}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;
-  border-top:1px solid var(--border);display:flex;z-index:200;
-  padding-bottom:env(safe-area-inset-bottom,0)}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:8px 2px;cursor:pointer;color:var(--text3);font-size:10px;gap:2px;
-  border:none;background:none}
-.nav-item.active{color:var(--primary)}
-.nav-item svg{width:20px;height:20px}
-.page{display:none;max-width:500px;margin:0 auto;padding:14px}
-.page.active{display:block}
-.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
-.card-body{padding:14px}
-.produk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.produk-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .1s}
-.produk-card:active{transform:scale(.98)}
-.produk-img{width:100%;height:110px;display:flex;align-items:center;justify-content:center;font-size:44px}
-.produk-info{padding:10px}
-.produk-nama{font-size:13px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.produk-jenis{font-size:10px;color:var(--text2);margin-bottom:5px}
-.produk-harga{font-size:14px;font-weight:700;color:var(--primary)}
-.produk-sat{font-size:10px;color:var(--text3)}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer}
-.b-blue{background:#dbeafe;color:#1e40af}
-.b-gray{background:#f3f4f6;color:#374151}
-.b-green{background:#d1fae5;color:#065f46}
-.b-red{background:#fee2e2;color:#991b1b}
-.b-purple{background:#ede9fe;color:#5b21b6}
-.b-yellow{background:#fef3c7;color:#92400e}
-label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;margin-top:10px}
-input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);
-  border-radius:var(--rsm);background:#fff;color:var(--text);font-size:14px;
-  -webkit-appearance:none;font-family:inherit}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
-textarea{resize:vertical;min-height:80px}
-.btn{width:100%;padding:13px;border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;margin-top:6px}
-.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.25)}
-.btn-primary:active{background:var(--primary-dark)}
-.btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
-.btn-success{background:var(--secondary);color:#fff}
-.btn-warn{background:var(--warn);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-purple{background:var(--purple);color:#fff}
-.btn-sm{padding:7px 14px;font-size:12px;width:auto;border-radius:var(--rsm)}
-.search-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.search-box input{border:none;padding:0;font-size:14px;flex:1}
-.search-box input:focus{outline:none}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end}
-.modal-overlay.show{display:flex}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:92vh;overflow-y:auto}
-.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px}
-.modal h2{font-size:16px;font-weight:700;margin-bottom:12px}
-.cart-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
-.cart-item:last-child{border-bottom:none}
-.cart-icon{width:46px;height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.qty-ctrl{display:flex;align-items:center;gap:8px;margin-top:6px}
-.qty-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.qty-val{font-size:14px;font-weight:700;min-width:28px;text-align:center}
-.total-box{background:var(--primary);border-radius:var(--radius);padding:14px;color:#fff;margin-bottom:12px}
-.total-label{font-size:12px;opacity:.8;margin-bottom:3px}
-.total-val{font-size:22px;font-weight:800}
-.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.s-pending{background:#fef3c7;color:#92400e}
-.s-proses{background:#dbeafe;color:#1e40af}
-.s-siap{background:#d1fae5;color:#065f46}
-.s-kirim{background:#ede9fe;color:#5b21b6}
-.s-selesai{background:#f0fdf4;color:#166534}
-.s-sample{background:#fce7f3;color:#9d174d}
-.track-step{display:flex;gap:10px;margin-bottom:14px}
-.track-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px}
-.t-done{background:#d1fae5;color:#065f46}
-.t-active{background:var(--primary);color:#fff}
-.t-pending{background:#f3f4f6;color:#9ca3af}
-.track-line{width:2px;background:#e5e7eb;margin:3px 0 3px 14px;height:16px}
-.inv-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)}
-.inv-row:last-child{border-bottom:none}
-.inv-total{display:flex;justify-content:space-between;padding:10px 0;font-size:15px;font-weight:700;border-top:2px solid var(--primary);color:var(--primary)}
-.drow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px}
-.drow:last-child{border-bottom:none}
-.drow .dl{color:var(--text2);flex:1;line-height:1.5}
-.drow .dv{color:var(--text);font-weight:600;white-space:nowrap}
-.stitle{font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 6px}
-.empty{text-align:center;padding:40px 20px;color:var(--text3)}
-.empty .ico{font-size:48px;margin-bottom:10px}
-.notif{position:fixed;top:80px;left:50%;transform:translateX(-50%);
-  background:#1f2937;color:#fff;padding:10px 20px;border-radius:20px;
-  font-size:13px;z-index:500;display:none;white-space:nowrap}
-.notif.show{display:block;animation:fo 2.5s ease}
-@keyframes fo{0%{opacity:0;transform:translateX(-50%) translateY(-8px)}
-  15%{opacity:1;transform:translateX(-50%) translateY(0)}70%{opacity:1}100%{opacity:0}}
-.admin-bar{background:#1f2937;padding:8px 16px;text-align:center;font-size:12px;color:#9ca3af}
-.sec-title{font-size:15px;font-weight:700;margin-bottom:12px}
-.wa-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--rsm);padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.wa-item .wn{font-size:13px;font-weight:600}
-.wa-item .wp{font-size:12px;color:var(--text2)}
-.feedback-item{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px;margin-bottom:10px}
-.feedback-type{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:6px}
-.ft-sample{background:#fce7f3;color:#9d174d}
-.ft-masukan{background:#dbeafe;color:#1e40af}
-.ft-keluhan{background:#fee2e2;color:#991b1b}
-.star{font-size:20px;cursor:pointer;color:#d1d5db}
-.star.on{color:#f59e0b}
-</style>
-</head>
-<body>
 
-<div class="admin-bar" id="admin-bar" style="display:none">
-  Mode Admin: <span id="admin-name" style="color:#f59e0b;font-weight:600">-</span> |
-  <span style="cursor:pointer;text-decoration:underline;color:#9ca3af" onclick="logout()">Logout</span>
-</div>
+function clearFotoProduk(){
+  document.getElementById('tp-foto-data').value='';
+  document.getElementById('tp-foto-img').src='';
+  document.getElementById('tp-foto-img').style.display='none';
+  document.getElementById('tp-foto-placeholder').style.display='block';
+  document.getElementById('tp-foto-clear').style.display='none';
+  document.getElementById('tp-foto-input').value='';
+}
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div>
-      <h1>🧵 Toko Kain</h1>
-      <p id="topbar-sub">Produksi Kain Berkualitas</p>
-    </div>
-    <button class="cart-btn" onclick="showPage('keranjang')">
-      🛒 Keranjang
-      <span class="cart-badge" id="cart-badge" style="display:none">0</span>
-    </button>
-  </div>
-</div>
+function updateHargaPreview(){
+  const h=parseFloat(document.getElementById('tp-harga').value)||0;
+  const prev=document.getElementById('tp-harga-preview');
+  if(h>0){
+    prev.style.display='block';
+    document.getElementById('tp-prev-kg').textContent='Rp '+Math.round(h).toLocaleString('id-ID');
+    document.getElementById('tp-prev-rol').textContent='Rp '+Math.round(h*ROL_KG).toLocaleString('id-ID');
+  } else {
+    prev.style.display='none';
+  }
+}
 
-<div class="notif" id="notif"></div>
+// ============================================================
+// TOGGLE AKTIF PRODUK
+// ============================================================
+function toggleAktif(id){
+  const p=produkList.find(x=>x.id===id); if(!p) return;
+  p.aktif=!p.aktif;
+  saveAll(); renderProduk(); renderAdminKatalog();
+  notif(p.aktif?'✅ Produk diaktifkan':'⛔ Produk dinonaktifkan');
+}
 
-<!-- ===== KATALOG ===== -->
-<div class="page active" id="page-katalog">
-  <div class="search-box">
-    <span>🔍</span>
-    <input type="text" id="search-input" placeholder="Cari produk kain..." oninput="renderProduk()">
-  </div>
-  <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px" id="ftabs">
-    <button class="badge b-blue" onclick="setFilter('semua')" id="f-semua">Semua</button>
-  </div>
-  <div class="sec-title">Produk Kami</div>
-  <div class="produk-grid" id="produk-grid"></div>
-</div>
+// ============================================================
+// KELOLA WARNA (ADMIN KATALOG)
+// ============================================================
+function openWarnaModal(id){
+  editWarnaProdukId=id;
+  const p=produkList.find(x=>x.id===id); if(!p) return;
+  document.getElementById('modal-warna-title').textContent='🎨 Warna — '+p.nama;
+  renderWarnaListAdmin();
+  // Reset form tambah warna
+  document.getElementById('wn-nama').value='';
+  document.getElementById('wn-color').value='#ffffff';
+  document.getElementById('wn-color-hex').value='#ffffff';
+  document.getElementById('wn-stok').value='0';
+  document.getElementById('wn-foto-preview').style.display='none';
+  warnaFotoData=null;
+  showModal('modal-warna');
+}
 
-<!-- ===== KERANJANG ===== -->
-<div class="page" id="page-keranjang">
-  <div class="sec-title">🛒 Keranjang Belanja</div>
-  <div id="cart-items"></div>
-  <div id="cart-summary" style="display:none">
-    <div class="total-box">
-      <div class="total-label">Total Pesanan</div>
-      <div class="total-val" id="cart-total">Rp 0</div>
-      <div style="font-size:11px;opacity:.7;margin-top:3px" id="cart-info"></div>
-    </div>
-    <button class="btn btn-primary" onclick="showPage('checkout')">Lanjut ke Checkout →</button>
-    <button class="btn btn-secondary" onclick="showPage('katalog')">+ Tambah Produk</button>
-  </div>
-</div>
-
-<!-- ===== CHECKOUT ===== -->
-<div class="page" id="page-checkout">
-  <div class="sec-title">📋 Checkout</div>
-  <div class="card"><div class="card-body">
-    <div style="font-size:14px;font-weight:600;margin-bottom:10px">Data Pemesan</div>
-    <label>Nama lengkap / Perusahaan *</label>
-    <input type="text" id="co-nama" placeholder="Nama Anda / CV / PT">
-    <label>No. WhatsApp *</label>
-    <input type="tel" id="co-wa" placeholder="08xxxxxxxxxx">
-    <label>Alamat pengiriman *</label>
-    <textarea id="co-alamat" placeholder="Alamat lengkap, kota, kode pos"></textarea>
-    <label>Catatan (warna, spesifikasi, dll)</label>
-    <textarea id="co-catatan" style="min-height:60px" placeholder="Catatan tambahan..."></textarea>
-  </div></div>
-  <div class="card"><div class="card-body">
-    <div style="font-size:14px;font-weight:600;margin-bottom:10px">Ringkasan Pesanan</div>
-    <div id="co-items"></div>
-    <div style="border-top:2px solid var(--primary);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between">
-      <span style="font-weight:700;font-size:15px">Total</span>
-      <span style="font-weight:800;font-size:16px;color:var(--primary)" id="co-total">Rp 0</span>
-    </div>
-  </div></div>
-  <button class="btn btn-primary" onclick="buatPesanan()">✅ Buat Pesanan</button>
-  <button class="btn btn-secondary" onclick="showPage('keranjang')">← Kembali</button>
-</div>
-
-<!-- ===== PESANAN ===== -->
-<div class="page" id="page-pesanan">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div class="sec-title" style="margin-bottom:0">📦 Pesanan</div>
-    <select id="filter-status" onchange="renderPesanan()" style="width:auto;padding:6px 10px;font-size:12px">
-      <option value="semua">Semua</option>
-      <option value="pending">Menunggu</option>
-      <option value="proses">Diproses</option>
-      <option value="siap">Siap Kirim</option>
-      <option value="kirim">Dikirim</option>
-      <option value="selesai">Selesai</option>
-    </select>
-  </div>
-  <div id="pesanan-list"></div>
-</div>
-
-<!-- ===== LAYANAN ===== -->
-<div class="page" id="page-layanan">
-  <div class="sec-title">💬 Layanan Customer</div>
-
-  <!-- Menu Layanan -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-    <div class="card" style="cursor:pointer;margin-bottom:0" onclick="showModal('modal-sample')">
-      <div class="card-body" style="text-align:center;padding:16px">
-        <div style="font-size:36px;margin-bottom:8px">🧪</div>
-        <div style="font-weight:700;font-size:14px">Request Sample</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:4px">Test kain sebelum order besar</div>
+function renderWarnaListAdmin(){
+  const p=produkList.find(x=>x.id===editWarnaProdukId); if(!p) return;
+  const el=document.getElementById('warna-list-admin');
+  if(!p.warna||!p.warna.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px">Belum ada varian warna</div>';
+    return;
+  }
+  el.innerHTML=p.warna.map((w,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:var(--rsm);margin-bottom:8px">
+      <div style="width:40px;height:40px;border-radius:50%;background:${w.hex||'#ccc'};border:2px solid var(--border);flex-shrink:0;overflow:hidden;position:relative">
+        ${w.foto?`<img src="${w.foto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:''}
       </div>
-    </div>
-    <div class="card" style="cursor:pointer;margin-bottom:0" onclick="showModal('modal-masukan')">
-      <div class="card-body" style="text-align:center;padding:16px">
-        <div style="font-size:36px;margin-bottom:8px">💡</div>
-        <div style="font-weight:700;font-size:14px">Masukan</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:4px">Saran & ide untuk kami</div>
-      </div>
-    </div>
-    <div class="card" style="cursor:pointer;margin-bottom:0" onclick="showModal('modal-keluhan')">
-      <div class="card-body" style="text-align:center;padding:16px">
-        <div style="font-size:36px;margin-bottom:8px">📢</div>
-        <div style="font-weight:700;font-size:14px">Keluhan</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:4px">Laporkan masalah pesanan</div>
-      </div>
-    </div>
-    <div class="card" style="cursor:pointer;margin-bottom:0" onclick="hubungiAdmin()">
-      <div class="card-body" style="text-align:center;padding:16px">
-        <div style="font-size:36px;margin-bottom:8px">📱</div>
-        <div style="font-weight:700;font-size:14px">Hubungi Kami</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:4px">Chat langsung via WA</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Riwayat Feedback -->
-  <div class="sec-title" style="font-size:14px">Riwayat Pengajuan Saya</div>
-  <div id="feedback-list"></div>
-</div>
-
-<!-- ===== PROFIL / ADMIN ===== -->
-<div class="page" id="page-profil">
-  <!-- CUSTOMER -->
-  <div id="profil-customer" style="display:none">
-    <div class="card"><div class="card-body" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">👤</div>
-      <div style="font-size:16px;font-weight:700" id="profil-nama">-</div>
-      <div style="font-size:13px;color:var(--text2)" id="profil-wa">-</div>
-      <div style="margin-top:10px"><span class="badge b-green">Customer</span></div>
-    </div></div>
-    <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="logout()">Logout</button>
-  </div>
-
-  <!-- ADMIN -->
-  <div id="profil-admin" style="display:none">
-    <div class="card" style="background:linear-gradient(135deg,#1f2937,#374151);color:#fff;margin-bottom:12px">
-      <div class="card-body">
-        <div style="font-size:12px;opacity:.7">Login sebagai</div>
-        <div style="font-size:18px;font-weight:700;margin-top:2px" id="admin-label">Admin</div>
-        <div style="margin-top:8px"><span style="background:rgba(245,158,11,.2);color:#f59e0b;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">ADMINISTRATOR</span></div>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="card"><div class="card-body">
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📊 Statistik</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
-        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)">
-          <div style="font-size:20px;font-weight:700;color:var(--primary)" id="stat-total">0</div>
-          <div style="font-size:11px;color:var(--text2)">Total Order</div>
-        </div>
-        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)">
-          <div style="font-size:20px;font-weight:700;color:var(--warn)" id="stat-pending">0</div>
-          <div style="font-size:11px;color:var(--text2)">Pending</div>
-        </div>
-        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)">
-          <div style="font-size:20px;font-weight:700;color:var(--secondary)" id="stat-selesai">0</div>
-          <div style="font-size:11px;color:var(--text2)">Selesai</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${w.nama}</div>
+        <div style="font-size:12px;color:var(--text2)">${w.hex||'Tanpa kode warna'}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <span style="font-size:11px;color:var(--text2)">Stok:</span>
+          <input type="number" value="${w.stok}" min="0" style="width:60px;padding:3px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px"
+            onchange="updateStok(${i},this.value)">
+          <span style="font-size:11px;color:var(--text2)">rol</span>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;text-align:center">
-        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)">
-          <div style="font-size:20px;font-weight:700;color:var(--purple)" id="stat-sample">0</div>
-          <div style="font-size:11px;color:var(--text2)">Request Sample</div>
-        </div>
-        <div style="background:var(--bg);padding:10px;border-radius:var(--rsm)">
-          <div style="font-size:20px;font-weight:700;color:var(--danger)" id="stat-keluhan">0</div>
-          <div style="font-size:11px;color:var(--text2)">Keluhan</div>
-        </div>
+      <button class="btn btn-danger btn-sm" onclick="hapusWarna(${i})">🗑️</button>
+    </div>`).join('');
+}
+
+function tambahWarna(){
+  const nama=document.getElementById('wn-nama').value.trim();
+  const hex =document.getElementById('wn-color-hex').value.trim()||document.getElementById('wn-color').value;
+  const stok=parseInt(document.getElementById('wn-stok').value)||0;
+  if(!nama){ alert('Nama warna harus diisi'); return; }
+  const p=produkList.find(x=>x.id===editWarnaProdukId); if(!p) return;
+  if(!p.warna) p.warna=[];
+  const nid=Math.max(...p.warna.map(w=>w.id),0)+1;
+  p.warna.push({id:nid, nama, hex, foto:warnaFotoData||'', stok});
+  saveAll(); renderWarnaListAdmin(); renderAdminKatalog(); renderProduk();
+  // Reset
+  document.getElementById('wn-nama').value='';
+  document.getElementById('wn-color').value='#ffffff';
+  document.getElementById('wn-color-hex').value='#ffffff';
+  document.getElementById('wn-stok').value='0';
+  document.getElementById('wn-foto-preview').style.display='none';
+  warnaFotoData=null;
+  notif('✅ Warna ditambahkan!');
+}
+
+function hapusWarna(idx){
+  if(!confirm('Hapus varian warna ini?')) return;
+  const p=produkList.find(x=>x.id===editWarnaProdukId); if(!p) return;
+  p.warna.splice(idx,1);
+  saveAll(); renderWarnaListAdmin(); renderAdminKatalog(); renderProduk();
+  notif('🗑️ Warna dihapus');
+}
+
+function updateStok(idx, val){
+  const p=produkList.find(x=>x.id===editWarnaProdukId); if(!p) return;
+  p.warna[idx].stok=parseInt(val)||0;
+  saveAll(); renderAdminKatalog();
+  notif('✅ Stok diperbarui!');
+}
+
+function syncColorHex(){
+  const hex=document.getElementById('wn-color-hex').value;
+  if(/^#[0-9a-fA-F]{6}$/.test(hex))
+    document.getElementById('wn-color').value=hex;
+}
+
+function previewWarnaFoto(){
+  const file=document.getElementById('wn-foto').files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    warnaFotoData=e.target.result;
+    const prev=document.getElementById('wn-foto-preview');
+    prev.src=warnaFotoData;
+    prev.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Update color picker saat hex berubah
+document.addEventListener('DOMContentLoaded',function(){
+  // Sync primary color picker
+  const stPrimary=document.getElementById('st-primary');
+  if(stPrimary){ stPrimary.addEventListener('input',function(){ document.getElementById('st-primary-hex').value=this.value; updateSettingsPreview(); }); }
+  const colorPicker=document.getElementById('wn-color');
+  if(colorPicker){
+    colorPicker.addEventListener('input',function(){
+      document.getElementById('wn-color-hex').value=this.value;
+    });
+  }
+});
+
+// ============================================================
+// WA ADMIN
+// ============================================================
+
+
+// ============================================================
+// FEEDBACK: SAMPLE, MASUKAN, KELUHAN
+// ============================================================
+function populateSampleProduk(){
+  const sel=document.getElementById('smp-produk');
+  if(!sel) return;
+  sel.innerHTML='<option value="">-- Pilih produk --</option>'+
+    produkList.filter(p=>p.aktif).map(p=>`<option value="${p.id}">${p.nama}</option>`).join('');
+}
+
+function setRating(r){
+  rating=r;
+  for(let i=1;i<=5;i++) document.getElementById('star-'+i).className='star'+(i<=r?' on':'');
+}
+
+function kirimSample(){
+  const produkId=document.getElementById('smp-produk').value;
+  const desc    =document.getElementById('smp-desc').value.trim();
+  const tujuan  =document.getElementById('smp-tujuan').value.trim();
+  const alamat  =document.getElementById('smp-alamat').value.trim();
+  if(!desc&&!produkId){ alert('Pilih produk atau deskripsikan kain yang diinginkan'); return; }
+  if(!alamat){ alert('Alamat pengiriman sample harus diisi'); return; }
+  const produkNama=produkId?produkList.find(p=>p.id==produkId)?.nama||'':'';
+  const fb={id:genId(),type:'sample',customer:{nama:currentUser.nama,wa:currentUser.wa},
+    produk:produkNama,desc,tujuan,alamat,status:'pending',tgl:Date.now()};
+  feedbackList.unshift(fb); saveAll();
+  const msg=`🧪 *REQUEST SAMPLE - Toko Kain*\n\nDari: ${currentUser.nama} (${currentUser.wa})\n`+
+    (produkNama?`Produk: ${produkNama}\n`:'')+
+    (desc?`Deskripsi: ${desc}\n`:'')+
+    (tujuan?`Tujuan: ${tujuan}\n`:'')+
+    `Alamat: ${alamat}`;
+  closeModal('modal-sample'); notif('✅ Request sample terkirim!');
+  waAdminList.forEach(w=>window.open(`https://wa.me/${w.no}?text=${encodeURIComponent(msg)}`,'_blank'));
+  renderFeedbackList();
+  ['smp-desc','smp-tujuan','smp-alamat'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('smp-produk').value='';
+}
+
+function kirimMasukan(){
+  const kat=document.getElementById('mk-kategori').value;
+  const isi=document.getElementById('mk-isi').value.trim();
+  if(!isi){ alert('Masukan tidak boleh kosong'); return; }
+  const fb={id:genId(),type:'masukan',customer:{nama:currentUser.nama,wa:currentUser.wa},
+    kategori:kat,isi,rating,tgl:Date.now()};
+  feedbackList.unshift(fb); saveAll();
+  const msg=`💡 *MASUKAN CUSTOMER - Toko Kain*\n\nDari: ${currentUser.nama} (${currentUser.wa})\nKategori: ${kat}\nRating: ${'★'.repeat(rating)||'-'}\n\nMasukan:\n${isi}`;
+  closeModal('modal-masukan'); notif('✅ Masukan terkirim! Terima kasih');
+  setRating(0); document.getElementById('mk-isi').value='';
+  waAdminList.forEach(w=>window.open(`https://wa.me/${w.no}?text=${encodeURIComponent(msg)}`,'_blank'));
+  renderFeedbackList();
+}
+
+function kirimKeluhan(){
+  const noPesanan=document.getElementById('kl-nopesanan').value.trim();
+  const jenis    =document.getElementById('kl-jenis').value;
+  const detail   =document.getElementById('kl-detail').value.trim();
+  if(!detail){ alert('Detail keluhan harus diisi'); return; }
+  const fb={id:genId(),type:'keluhan',customer:{nama:currentUser.nama,wa:currentUser.wa},
+    noPesanan,jenis,detail,status:'baru',tgl:Date.now()};
+  feedbackList.unshift(fb); saveAll();
+  const msg=`📢 *KELUHAN CUSTOMER - Toko Kain*\n\nDari: ${currentUser.nama} (${currentUser.wa})\n`+
+    (noPesanan?`No. Pesanan: ${noPesanan}\n`:'')+
+    `Jenis: ${jenis}\n\nDetail:\n${detail}`;
+  closeModal('modal-keluhan'); notif('✅ Keluhan terkirim! Kami akan segera merespons');
+  document.getElementById('kl-nopesanan').value='';
+  document.getElementById('kl-detail').value='';
+  waAdminList.forEach(w=>window.open(`https://wa.me/${w.no}?text=${encodeURIComponent(msg)}`,'_blank'));
+  renderFeedbackList();
+}
+
+function renderFeedbackList(){
+  const el=document.getElementById('feedback-list');
+  if(!el) return;
+  let list=feedbackList;
+  if(currentUser?.role==='customer') list=list.filter(f=>f.customer.wa===currentUser.wa);
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="ico">💬</div><p>Belum ada pengajuan</p></div>'; return; }
+  const tl={sample:'🧪 Request Sample',masukan:'💡 Masukan',keluhan:'📢 Keluhan'};
+  const tc={sample:'ft-sample',masukan:'ft-masukan',keluhan:'ft-keluhan'};
+  el.innerHTML=list.map(f=>`
+    <div class="feedback-item" onclick="showFeedbackDetail('${f.id}')">
+      <span class="feedback-type ${tc[f.type]}">${tl[f.type]}</span>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">👤 ${f.customer.nama} | 📅 ${tglFmt(f.tgl)}</div>
+      <div style="font-size:13px">${(f.isi||f.desc||f.detail||'').substring(0,60)}...</div>
+      ${f.rating?`<div style="font-size:14px;margin-top:4px">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</div>`:''}
+    </div>`).join('');
+}
+
+function showFeedbackDetail(id){
+  const f=feedbackList.find(x=>x.id===id); if(!f) return;
+  const tl={sample:'🧪 Request Sample',masukan:'💡 Masukan',keluhan:'📢 Keluhan'};
+  let c=`
+    <div class="drow"><span class="dl">ID</span><span class="dv">#${f.id}</span></div>
+    <div class="drow"><span class="dl">Tipe</span><span class="dv">${tl[f.type]}</span></div>
+    <div class="drow"><span class="dl">Customer</span><span class="dv">${f.customer.nama}</span></div>
+    <div class="drow"><span class="dl">WA</span><span class="dv">${f.customer.wa}</span></div>
+    <div class="drow"><span class="dl">Tanggal</span><span class="dv">${tglFmt(f.tgl)}</span></div>`;
+  if(f.type==='sample'){
+    c+=`<div class="drow"><span class="dl">Produk</span><span class="dv">${f.produk||'-'}</span></div>
+    <div class="drow"><span class="dl">Tujuan</span><span class="dv">${f.tujuan||'-'}</span></div>
+    <div class="drow"><span class="dl">Alamat</span><span class="dv" style="max-width:180px;text-align:right">${f.alamat}</span></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text2)">Deskripsi:</div>
+    <div style="font-size:13px;margin-top:4px">${f.desc||'-'}</div>`;
+  } else if(f.type==='masukan'){
+    c+=`<div class="drow"><span class="dl">Kategori</span><span class="dv">${f.kategori}</span></div>
+    ${f.rating?`<div class="drow"><span class="dl">Rating</span><span class="dv">${'★'.repeat(f.rating)}</span></div>`:''}
+    <div style="margin-top:10px;font-size:12px;color:var(--text2)">Masukan:</div>
+    <div style="font-size:13px;margin-top:4px">${f.isi}</div>`;
+  } else {
+    c+=`<div class="drow"><span class="dl">No. Pesanan</span><span class="dv">${f.noPesanan||'-'}</span></div>
+    <div class="drow"><span class="dl">Jenis</span><span class="dv">${f.jenis}</span></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text2)">Detail:</div>
+    <div style="font-size:13px;margin-top:4px">${f.detail}</div>`;
+  }
+  if(isOwner()){
+    c+=`<div style="margin-top:14px">
+      <button class="btn btn-success btn-sm" onclick="balasFeedback('${f.id}')">💬 Balas via WA</button>
+    </div>`;
+  }
+  document.getElementById('modal-feedback-content').innerHTML=c;
+  showModal('modal-feedback-detail');
+}
+
+function balasFeedback(id){
+  const f=feedbackList.find(x=>x.id===id); if(!f) return;
+  const tl={sample:'request sample',masukan:'masukan',keluhan:'keluhan'};
+  const msg=`Halo *${f.customer.nama}*,\nTerima kasih atas ${tl[f.type]} Anda (ID: #${f.id}).\n\nKami akan segera menindaklanjuti. 🧵`;
+  window.open(`https://wa.me/${f.customer.wa.replace(/^0/,'62')}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ============================================================
+// STATS (OWNER ONLY)
+// ============================================================
+function updateStats(){
+  if(!isOwner()) return;
+  document.getElementById('stat-total').textContent   =pesananList.length;
+  document.getElementById('stat-pending').textContent =pesananList.filter(p=>p.status==='pending').length;
+  document.getElementById('stat-selesai').textContent =pesananList.filter(p=>p.status==='selesai').length;
+}
+
+
+
+// ============================================================
+// PENGATURAN TOKO
+// ============================================================
+function showPengaturanToko(){
+  // Load current settings ke form
+  document.getElementById('st-nama').value     = tokoSettings.nama;
+  document.getElementById('st-tagline').value  = tokoSettings.tagline;
+  document.getElementById('st-emoji').value    = tokoSettings.logoEmoji;
+  document.getElementById('st-primary').value  = tokoSettings.primaryColor;
+  document.getElementById('st-primary-hex').value = tokoSettings.primaryColor;
+  document.getElementById('st-hero-text').value= tokoSettings.heroText;
+  document.getElementById('st-hero-sub').value = tokoSettings.heroSubText;
+  document.getElementById('st-wa-greeting').value = tokoSettings.waGreeting;
+  document.getElementById('st-footer').value   = tokoSettings.footerText;
+  // Logo
+  if(tokoSettings.logo){
+    document.getElementById('st-logo-data').value=tokoSettings.logo;
+    document.getElementById('st-logo-img').src=tokoSettings.logo;
+    document.getElementById('st-logo-img').style.display='block';
+    document.getElementById('st-logo-ph').style.display='none';
+    document.getElementById('st-logo-clear').style.display='block';
+  } else { clearLogo(); }
+  // Banner
+  if(tokoSettings.heroBanner){
+    document.getElementById('st-banner-data').value=tokoSettings.heroBanner;
+    document.getElementById('st-banner-type').value=tokoSettings.heroBannerType||'image';
+    if(tokoSettings.heroBannerType==='video'){
+      document.getElementById('st-banner-vid').src=tokoSettings.heroBanner;
+      document.getElementById('st-banner-vid').style.display='block';
+      document.getElementById('st-banner-img').style.display='none';
+    } else {
+      document.getElementById('st-banner-img').src=tokoSettings.heroBanner;
+      document.getElementById('st-banner-img').style.display='block';
+      document.getElementById('st-banner-vid').style.display='none';
+    }
+    document.getElementById('st-banner-ph').style.display='none';
+    document.getElementById('st-banner-clear').style.display='block';
+  } else { clearBanner(); }
+  updateSettingsPreview();
+  switchSettingsTab('identitas');
+  showModal('modal-settings');
+}
+
+function switchSettingsTab(tab){
+  ['identitas','warna','media','teks'].forEach(function(t){
+    document.getElementById('st-'+t).style.display = t===tab ? 'block':'none';
+    document.getElementById('st-tab-'+t).className = t===tab ? 'badge b-blue':'badge b-gray';
+  });
+}
+
+function updateSettingsPreview(){
+  const nama   = document.getElementById('st-nama')?.value    || tokoSettings.nama;
+  const tagline= document.getElementById('st-tagline')?.value || tokoSettings.tagline;
+  const emoji  = document.getElementById('st-emoji')?.value   || tokoSettings.logoEmoji;
+  const color  = document.getElementById('st-primary')?.value || tokoSettings.primaryColor;
+  const logo   = document.getElementById('st-logo-data')?.value;
+
+  document.getElementById('settings-preview').style.background = color;
+  document.getElementById('prev-nama').textContent    = nama;
+  document.getElementById('prev-tagline').textContent = tagline;
+  document.getElementById('prev-logo-emoji').textContent = emoji;
+
+  if(logo){
+    document.getElementById('prev-logo-img').src=logo;
+    document.getElementById('prev-logo-img').style.display='block';
+    document.getElementById('prev-logo-emoji').style.display='none';
+  } else {
+    document.getElementById('prev-logo-img').style.display='none';
+    document.getElementById('prev-logo-emoji').style.display='block';
+  }
+}
+
+function syncPrimaryHex(){
+  const hex=document.getElementById('st-primary-hex').value;
+  if(/^#[0-9a-fA-F]{6}$/.test(hex)){
+    document.getElementById('st-primary').value=hex;
+    updateSettingsPreview();
+  }
+}
+
+function applyTheme(color){
+  document.getElementById('st-primary').value=color;
+  document.getElementById('st-primary-hex').value=color;
+  updateSettingsPreview();
+}
+
+function previewLogo(){
+  const file=document.getElementById('st-logo-input').files[0];
+  if(!file) return;
+  if(file.size>3*1024*1024){ alert('Ukuran logo maksimal 3MB'); return; }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('st-logo-data').value=e.target.result;
+    document.getElementById('st-logo-img').src=e.target.result;
+    document.getElementById('st-logo-img').style.display='block';
+    document.getElementById('st-logo-ph').style.display='none';
+    document.getElementById('st-logo-clear').style.display='block';
+    updateSettingsPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearLogo(){
+  document.getElementById('st-logo-data').value='';
+  document.getElementById('st-logo-img').src='';
+  document.getElementById('st-logo-img').style.display='none';
+  document.getElementById('st-logo-ph').style.display='block';
+  document.getElementById('st-logo-clear').style.display='none';
+  document.getElementById('st-logo-input').value='';
+  updateSettingsPreview();
+}
+
+function previewBanner(){
+  const file=document.getElementById('st-banner-input').files[0];
+  if(!file) return;
+  if(file.size>10*1024*1024){ alert('Ukuran banner maksimal 10MB'); return; }
+  const isVideo=file.type.startsWith('video/');
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('st-banner-data').value=e.target.result;
+    document.getElementById('st-banner-type').value=isVideo?'video':'image';
+    document.getElementById('st-banner-ph').style.display='none';
+    document.getElementById('st-banner-clear').style.display='block';
+    if(isVideo){
+      document.getElementById('st-banner-vid').src=e.target.result;
+      document.getElementById('st-banner-vid').style.display='block';
+      document.getElementById('st-banner-img').style.display='none';
+    } else {
+      document.getElementById('st-banner-img').src=e.target.result;
+      document.getElementById('st-banner-img').style.display='block';
+      document.getElementById('st-banner-vid').style.display='none';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearBanner(){
+  document.getElementById('st-banner-data').value='';
+  document.getElementById('st-banner-type').value='';
+  document.getElementById('st-banner-img').src='';
+  document.getElementById('st-banner-img').style.display='none';
+  document.getElementById('st-banner-vid').src='';
+  document.getElementById('st-banner-vid').style.display='none';
+  document.getElementById('st-banner-ph').style.display='block';
+  document.getElementById('st-banner-clear').style.display='none';
+  document.getElementById('st-banner-input').value='';
+}
+
+function simpanSettings(){
+  const nama = document.getElementById('st-nama').value.trim();
+  if(!nama){ alert('Nama toko harus diisi'); return; }
+
+  tokoSettings.nama         = nama;
+  tokoSettings.tagline      = document.getElementById('st-tagline').value.trim();
+  tokoSettings.logoEmoji    = document.getElementById('st-emoji').value||'🧵';
+  tokoSettings.primaryColor = document.getElementById('st-primary').value;
+  tokoSettings.logo         = document.getElementById('st-logo-data').value;
+  tokoSettings.heroBanner   = document.getElementById('st-banner-data').value;
+  tokoSettings.heroBannerType = document.getElementById('st-banner-type').value;
+  tokoSettings.heroText     = document.getElementById('st-hero-text').value.trim();
+  tokoSettings.heroSubText  = document.getElementById('st-hero-sub').value.trim();
+  tokoSettings.waGreeting   = document.getElementById('st-wa-greeting').value.trim();
+  tokoSettings.footerText   = document.getElementById('st-footer').value.trim();
+
+  saveAll();
+  applySettings();
+  closeModal('modal-settings');
+  notif('✅ Pengaturan toko disimpan!');
+}
+
+function applySettings(){
+  // Topbar
+  document.querySelectorAll('.topbar').forEach(function(el){
+    el.style.background=tokoSettings.primaryColor;
+    el.style.boxShadow='0 2px 10px '+tokoSettings.primaryColor+'66';
+  });
+  // Nama & tagline
+  const h1=document.querySelector('.topbar h1');
+  if(h1){
+    h1.textContent=(tokoSettings.logo?'':tokoSettings.logoEmoji)+' '+tokoSettings.nama;
+  }
+  document.getElementById('topbar-sub').textContent=tokoSettings.tagline;
+  // Logo di topbar
+  updateTopbarLogo();
+  // CSS primary color
+  document.documentElement.style.setProperty('--primary', tokoSettings.primaryColor);
+  // Theme color meta
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content',tokoSettings.primaryColor);
+  // Title
+  document.title = tokoSettings.nama + ' - Pemesanan Online';
+  // Hero banner di katalog
+  renderHeroBanner();
+}
+
+function updateTopbarLogo(){
+  const h1=document.querySelector('.topbar h1');
+  if(!h1) return;
+  if(tokoSettings.logo){
+    h1.innerHTML=`<img src="${tokoSettings.logo}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px">${tokoSettings.nama}`;
+  } else {
+    h1.textContent=tokoSettings.logoEmoji+' '+tokoSettings.nama;
+  }
+}
+
+function renderHeroBanner(){
+  let heroEl=document.getElementById('hero-banner');
+  const katalog=document.getElementById('page-katalog');
+  if(!katalog) return;
+
+  if(!tokoSettings.heroBanner){
+    if(heroEl) heroEl.remove();
+    return;
+  }
+
+  if(!heroEl){
+    heroEl=document.createElement('div');
+    heroEl.id='hero-banner';
+    heroEl.style='width:100%;border-radius:12px;overflow:hidden;margin-bottom:12px;position:relative;max-height:200px';
+    const searchBox=katalog.querySelector('.search-box');
+    if(searchBox) katalog.insertBefore(heroEl,searchBox);
+    else katalog.prepend(heroEl);
+  }
+
+  if(tokoSettings.heroBannerType==='video'){
+    heroEl.innerHTML=`<video autoplay muted loop playsinline style="width:100%;height:200px;object-fit:cover;display:block" src="${tokoSettings.heroBanner}"></video>
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.5)">${tokoSettings.heroText}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.9);margin-top:6px">${tokoSettings.heroSubText}</div>
+      </div>`;
+  } else {
+    heroEl.innerHTML=`<img src="${tokoSettings.heroBanner}" style="width:100%;height:200px;object-fit:cover;display:block">
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.5)">${tokoSettings.heroText}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.9);margin-top:6px">${tokoSettings.heroSubText}</div>
+      </div>`;
+  }
+}
+
+// ============================================================
+// KATEGORI
+// ============================================================
+function renderFilterTabs(){
+  const el=document.getElementById('ftabs');
+  if(!el) return;
+  el.innerHTML='';
+  // Tombol Semua
+  const bSemua=document.createElement('button');
+  bSemua.className='badge b-blue';
+  bSemua.id='f-semua';
+  bSemua.textContent='Semua';
+  bSemua.onclick=function(){ setFilter('semua'); };
+  el.appendChild(bSemua);
+  // Tombol per kategori
+  kategoriList.forEach(function(k){
+    const btn=document.createElement('button');
+    btn.className='badge b-gray';
+    btn.id='f-'+k.id;
+    btn.style='display:flex;align-items:center;gap:4px';
+    btn.onclick=function(){ setFilter(k.id); };
+    if(k.foto){
+      const img=document.createElement('img');
+      img.src=k.foto;
+      img.style='width:16px;height:16px;border-radius:50%;object-fit:cover';
+      btn.appendChild(img);
+    } else {
+      btn.appendChild(document.createTextNode(k.icon));
+    }
+    btn.appendChild(document.createTextNode(' '+k.nama));
+    el.appendChild(btn);
+  });
+}
+
+function renderKategoriSelect(){
+  const sel=document.getElementById('tp-jenis');
+  if(!sel) return;
+  sel.innerHTML=kategoriList.map(k=>`<option value="${k.id}">${k.icon} ${k.nama}</option>`).join('');
+}
+
+function renderKategoriListAdmin(){
+  const el=document.getElementById('kategori-list-admin');
+  if(!el) return;
+  if(!kategoriList.length){ el.innerHTML='<div style="font-size:12px;color:var(--text3);text-align:center;padding:12px">Belum ada kategori</div>'; return; }
+  el.innerHTML=kategoriList.map((k,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:var(--rsm);margin-bottom:8px">
+      <div style="width:44px;height:44px;border-radius:var(--rsm);background:${k.foto?'#fff':'linear-gradient(135deg,#dbeafe,#ede9fe)'};
+        display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden;position:relative">
+        ${k.foto?`<img src="${k.foto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:''}
+        <span style="position:relative;z-index:1">${k.foto?'':k.icon}</span>
       </div>
-    </div></div>
-
-    <!-- Kelola WA Admin -->
-    <div class="card"><div class="card-body">
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px">📱 No. WA Penerima Notifikasi</div>
-      <div id="wa-admin-list"></div>
-      <button class="btn btn-success btn-sm" style="margin-top:8px" onclick="showModal('modal-tambah-wa')">+ Tambah No. WA</button>
-      <div style="font-size:11px;color:var(--text3);margin-top:8px">Semua nomor ini akan mendapat notifikasi pesanan & feedback baru</div>
-    </div></div>
-
-    <!-- Kelola -->
-    <div class="card"><div class="card-body">
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px">⚙️ Kelola</div>
-      <button class="btn btn-primary" style="margin-bottom:8px" onclick="showModal('modal-tambah-produk')">+ Tambah Produk Baru</button>
-      <button class="btn btn-secondary" style="margin-bottom:8px" onclick="showPage('pesanan')">📦 Kelola Semua Pesanan</button>
-      <button class="btn btn-secondary" onclick="showAdminFeedback()">💬 Lihat Semua Feedback</button>
-    </div></div>
-
-    <button class="btn btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="logout()">Logout</button>
-  </div>
-</div>
-
-<!-- ===== LOGIN ===== -->
-<div class="page" id="page-login">
-  <div style="padding:30px 0;text-align:center;margin-bottom:20px">
-    <div style="font-size:56px;margin-bottom:10px">🧵</div>
-    <div style="font-size:22px;font-weight:800;color:var(--primary)">Toko Kain</div>
-    <div style="font-size:13px;color:var(--text2);margin-top:4px">Produksi Kain Berkualitas</div>
-  </div>
-  <div class="card"><div class="card-body">
-    <div class="sec-title" style="text-align:center;font-size:15px;margin-bottom:14px">Masuk ke Akun</div>
-    <label>Nama lengkap</label>
-    <input type="text" id="login-nama" placeholder="Nama Anda">
-    <label>No. WhatsApp</label>
-    <input type="tel" id="login-wa" placeholder="08xxxxxxxxxx">
-    <button class="btn btn-primary" style="margin-top:14px" onclick="loginCustomer()">Masuk sebagai Customer</button>
-    <div style="text-align:center;margin:10px 0;color:var(--text3);font-size:12px">atau</div>
-    <button class="btn btn-secondary" onclick="showModal('modal-admin-login')">🔐 Login Admin</button>
-  </div></div>
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav" id="bottom-nav" style="display:none">
-  <button class="nav-item active" id="nav-katalog" onclick="showPage('katalog')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    Katalog
-  </button>
-  <button class="nav-item" id="nav-keranjang" onclick="showPage('keranjang')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-    Keranjang
-  </button>
-  <button class="nav-item" id="nav-pesanan" onclick="showPage('pesanan')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    Pesanan
-  </button>
-  <button class="nav-item" id="nav-layanan" onclick="showPage('layanan')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    Layanan
-  </button>
-  <button class="nav-item" id="nav-profil" onclick="showPage('profil')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    Profil
-  </button>
-</div>
-
-<!-- ===== MODALS ===== -->
-
-<!-- MODAL DETAIL PRODUK -->
-<div class="modal-overlay" id="modal-produk">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div style="font-size:52px;text-align:center;margin-bottom:8px" id="mp-icon">🧵</div>
-    <h2 id="mp-nama">-</h2>
-    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap" id="mp-badges"></div>
-    <div style="background:var(--bg);border-radius:var(--rsm);padding:10px;margin-bottom:10px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Komposisi:</div>
-      <div style="font-size:13px;line-height:1.7" id="mp-komposisi"></div>
-    </div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:12px" id="mp-desc"></div>
-    <div style="background:var(--primary);border-radius:var(--rsm);padding:12px;color:#fff;margin-bottom:14px">
-      <div style="font-size:11px;opacity:.8">Harga per rol (~25kg)</div>
-      <div style="font-size:24px;font-weight:800" id="mp-harga">Rp 0</div>
-      <div style="font-size:11px;opacity:.7" id="mp-harga-kg"></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-      <span style="font-size:13px;color:var(--text2)">Jumlah (rol):</span>
-      <button class="qty-btn" onclick="changeModalQty(-1)">−</button>
-      <span class="qty-val" id="mp-qty">1</span>
-      <button class="qty-btn" onclick="changeModalQty(1)">+</button>
-    </div>
-    <div style="background:var(--bg);border-radius:var(--rsm);padding:10px;margin-bottom:14px;display:flex;justify-content:space-between">
-      <span style="font-size:13px;color:var(--text2)">Subtotal:</span>
-      <span style="font-size:15px;font-weight:700;color:var(--primary)" id="mp-subtotal">Rp 0</span>
-    </div>
-    <button class="btn btn-primary" onclick="addToCart()">🛒 Tambah ke Keranjang</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-produk')">Tutup</button>
-  </div>
-</div>
-
-<!-- MODAL ADMIN LOGIN -->
-<div class="modal-overlay" id="modal-admin-login">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>🔐 Login Admin</h2>
-    <label>Username</label><input type="text" id="adm-user" placeholder="admin">
-    <label>Password</label><input type="password" id="adm-pass" placeholder="••••••">
-    <button class="btn btn-primary" style="margin-top:14px" onclick="loginAdmin()">Masuk</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-admin-login')">Batal</button>
-  </div>
-</div>
-
-<!-- MODAL TAMBAH PRODUK -->
-<div class="modal-overlay" id="modal-tambah-produk">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2 id="modal-produk-title">+ Tambah Produk</h2>
-
-    <div style="margin-bottom:14px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600">Foto / Gambar Produk</div>
-      <div id="tp-foto-preview" onclick="document.getElementById('tp-foto-input').click()"
-        style="width:100%;height:160px;background:linear-gradient(135deg,#dbeafe,#ede9fe);border-radius:var(--radius);
-        display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
-        border:2px dashed var(--border);overflow:hidden;position:relative">
-        <img id="tp-foto-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
-        <div id="tp-foto-placeholder" style="text-align:center">
-          <div style="font-size:36px;margin-bottom:6px">📷</div>
-          <div style="font-size:13px;color:var(--text2)">Tap untuk pilih foto</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">JPG, PNG, max 5MB</div>
-        </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${k.nama}</div>
+        <div style="font-size:11px;color:var(--text3)">ID: ${k.id} | ${produkList.filter(p=>p.jenis===k.id).length} produk</div>
       </div>
-      <input type="file" id="tp-foto-input" accept="image/*" style="display:none" onchange="previewFotoProduk()">
-      <button id="tp-foto-clear" onclick="clearFotoProduk()" style="display:none;margin-top:6px;background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer">x Hapus foto</button>
-    </div>
-
-    <label>Nama produk *</label>
-    <input type="text" id="tp-nama" placeholder="Kain Balon PE">
-    <label>Jenis kain</label>
-    <select id="tp-jenis" id="tp-jenis"></select>
-    <label>Komposisi bahan</label>
-    <input type="text" id="tp-komposisi" placeholder="94% PE DTY 100D, 6% Spandek 20D">
-    <label>Deskripsi produk</label>
-    <textarea id="tp-desc" placeholder="Keunggulan produk, cocok untuk apa, dll..." style="min-height:70px"></textarea>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-      <div>
-        <label style="margin-top:0">Harga per kg (Rp) *</label>
-        <input type="number" id="tp-harga" placeholder="0" min="0" oninput="updateHargaPreview()">
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary btn-sm" onclick="editKategori('${k.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="hapusKategori('${k.id}')">🗑️</button>
       </div>
-      <div>
-        <label style="margin-top:0">Min. order (rol)</label>
-        <input type="number" id="tp-minorder" placeholder="1" min="1" value="1">
-      </div>
-    </div>
-    <div id="tp-harga-preview" style="display:none;background:#dbeafe;border-radius:var(--rsm);padding:10px;margin-top:8px;font-size:12px;color:#1e40af">
-      <div style="display:flex;justify-content:space-between">
-        <span>Harga per kg:</span><span id="tp-prev-kg" style="font-weight:600">Rp 0</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:3px">
-        <span>Harga per rol (~25kg):</span><span id="tp-prev-rol" style="font-weight:600">Rp 0</span>
-      </div>
-    </div>
-    <label>Emoji icon</label>
-    <input type="text" id="tp-icon" placeholder="ngse" value="🧵" maxlength="2">
-    <input type="hidden" id="tp-edit-id" value="">
-    <input type="hidden" id="tp-foto-data" value="">
-    <button class="btn btn-primary" style="margin-top:16px" onclick="simpanProduk()">Simpan Produk</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-tambah-produk')">Batal</button>
-  </div>
-</div>
+    </div>`).join('');
+}
 
-<!-- MODAL TAMBAH WA ADMIN -->
-<div class="modal-overlay" id="modal-tambah-wa">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>+ Tambah No. WA Admin</h2>
-    <label>Nama admin / staff</label><input type="text" id="wa-nama" placeholder="Nama admin">
-    <label>No. WhatsApp (format: 628xxx)</label><input type="tel" id="wa-no" placeholder="628xxxxxxxxxx">
-    <div style="font-size:11px;color:var(--text3);margin-top:4px">Gunakan format internasional: 628xxxxxxxxxx</div>
-    <button class="btn btn-primary" style="margin-top:14px" onclick="tambahWAAdmin()">Simpan</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-tambah-wa')">Batal</button>
-  </div>
-</div>
+function previewKatFoto(){
+  const file=document.getElementById('kat-foto-input').files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('kat-foto-data').value=e.target.result;
+    document.getElementById('kat-foto-img').src=e.target.result;
+    document.getElementById('kat-foto-img').style.display='block';
+    document.getElementById('kat-foto-ph').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
 
-<!-- MODAL PENGATURAN TOKO -->
-<div class="modal-overlay" id="modal-settings">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>🎨 Pengaturan Tampilan Toko</h2>
+function clearKatFoto(){
+  document.getElementById('kat-foto-data').value='';
+  document.getElementById('kat-foto-img').src='';
+  document.getElementById('kat-foto-img').style.display='none';
+  document.getElementById('kat-foto-ph').style.display='block';
+  document.getElementById('kat-foto-input').value='';
+}
 
-    <!-- PREVIEW TOPBAR -->
-    <div id="settings-preview" style="border-radius:var(--rsm);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div id="prev-logo-wrap" style="width:36px;height:36px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.2);flex-shrink:0">
-          <img id="prev-logo-img" src="" style="display:none;width:100%;height:100%;object-fit:cover">
-          <span id="prev-logo-emoji">🧵</span>
-        </div>
-        <div>
-          <div id="prev-nama" style="font-size:15px;font-weight:700;color:#fff">Toko Kain</div>
-          <div id="prev-tagline" style="font-size:11px;color:rgba(255,255,255,.8)">Produksi Kain Berkualitas</div>
-        </div>
-      </div>
-      <div style="background:rgba(255,255,255,.2);border-radius:6px;padding:6px 10px;color:#fff;font-size:12px">🛒</div>
-    </div>
+function simpanKategori(){
+  const nama    = document.getElementById('kat-nama').value.trim();
+  const icon    = document.getElementById('kat-icon').value||'🧵';
+  const foto    = document.getElementById('kat-foto-data').value;
+  const editId  = document.getElementById('kat-edit-id').value;
+  if(!nama){ alert('Nama kategori harus diisi'); return; }
 
-    <!-- TABS SETTINGS -->
-    <div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto">
-      <button class="badge b-blue" id="st-tab-identitas" onclick="switchSettingsTab('identitas')">🏪 Identitas</button>
-      <button class="badge b-gray" id="st-tab-warna" onclick="switchSettingsTab('warna')">🎨 Warna</button>
-      <button class="badge b-gray" id="st-tab-media" onclick="switchSettingsTab('media')">📸 Media</button>
-      <button class="badge b-gray" id="st-tab-teks" onclick="switchSettingsTab('teks')">📝 Teks</button>
-    </div>
+  if(editId){
+    const k=kategoriList.find(x=>x.id===editId);
+    if(k){ k.nama=nama; k.icon=icon; if(foto) k.foto=foto; }
+    notif('✅ Kategori diperbarui!');
+  } else {
+    // Generate ID dari nama
+    const nid = nama.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    if(kategoriList.find(x=>x.id===nid)){ alert('Kategori dengan nama ini sudah ada!'); return; }
+    kategoriList.push({id:nid, nama, icon, foto});
+    notif('✅ Kategori ditambahkan!');
+  }
+  saveAll();
+  renderFilterTabs();
+  renderKategoriListAdmin();
+  renderKategoriSelect();
+  // Reset form
+  document.getElementById('kat-nama').value='';
+  document.getElementById('kat-icon').value='🧵';
+  document.getElementById('kat-edit-id').value='';
+  clearKatFoto();
+}
 
-    <!-- TAB IDENTITAS -->
-    <div id="st-identitas">
-      <label>Nama toko *</label>
-      <input type="text" id="st-nama" placeholder="Toko Kain" oninput="updateSettingsPreview()">
-      <label>Tagline / slogan</label>
-      <input type="text" id="st-tagline" placeholder="Produksi Kain Berkualitas" oninput="updateSettingsPreview()">
-      <label>Emoji / icon toko</label>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-        <input type="text" id="st-emoji" maxlength="2" placeholder="🧵" style="width:70px" oninput="updateSettingsPreview()">
-        <span style="font-size:12px;color:var(--text2)">atau upload logo:</span>
-      </div>
-      <div id="st-logo-preview" onclick="document.getElementById('st-logo-input').click()"
-        style="width:80px;height:80px;border-radius:50%;background:var(--bg);border:2px dashed var(--border);
-        display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;margin-top:8px">
-        <img id="st-logo-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
-        <div id="st-logo-ph" style="text-align:center;font-size:11px;color:var(--text3)">📷<br>Logo</div>
-      </div>
-      <input type="file" id="st-logo-input" accept="image/*" style="display:none" onchange="previewLogo()">
-      <input type="hidden" id="st-logo-data" value="">
-      <button id="st-logo-clear" onclick="clearLogo()" style="display:none;margin-top:4px;background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer">✕ Hapus logo</button>
-    </div>
+function editKategori(id){
+  const k=kategoriList.find(x=>x.id===id); if(!k) return;
+  document.getElementById('kat-nama').value=k.nama;
+  document.getElementById('kat-icon').value=k.icon;
+  document.getElementById('kat-edit-id').value=k.id;
+  if(k.foto){
+    document.getElementById('kat-foto-data').value=k.foto;
+    document.getElementById('kat-foto-img').src=k.foto;
+    document.getElementById('kat-foto-img').style.display='block';
+    document.getElementById('kat-foto-ph').style.display='none';
+  } else { clearKatFoto(); }
+  // Scroll ke form
+  document.getElementById('kat-nama').scrollIntoView({behavior:'smooth'});
+  notif('✏️ Edit kategori: '+k.nama);
+}
 
-    <!-- TAB WARNA -->
-    <div id="st-warna" style="display:none">
-      <label>Warna utama (topbar & tombol)</label>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-        <input type="color" id="st-primary" value="#2563eb" style="width:50px;height:40px;padding:2px;cursor:pointer" oninput="updateSettingsPreview()">
-        <input type="text" id="st-primary-hex" placeholder="#2563eb" style="flex:1" oninput="syncPrimaryHex()">
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px">Warna ini akan dipakai di topbar, tombol, dan aksen utama</div>
-      <label style="margin-top:14px">Pilih tema preset:</label>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">
-        <div onclick="applyTheme('#2563eb')" style="height:36px;border-radius:var(--rsm);background:#2563eb;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Biru</div>
-        <div onclick="applyTheme('#16a34a')" style="height:36px;border-radius:var(--rsm);background:#16a34a;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Hijau</div>
-        <div onclick="applyTheme('#dc2626')" style="height:36px;border-radius:var(--rsm);background:#dc2626;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Merah</div>
-        <div onclick="applyTheme('#7c3aed')" style="height:36px;border-radius:var(--rsm);background:#7c3aed;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Ungu</div>
-        <div onclick="applyTheme('#0891b2')" style="height:36px;border-radius:var(--rsm);background:#0891b2;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Cyan</div>
-        <div onclick="applyTheme('#d97706')" style="height:36px;border-radius:var(--rsm);background:#d97706;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Emas</div>
-        <div onclick="applyTheme('#be185d')" style="height:36px;border-radius:var(--rsm);background:#be185d;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Pink</div>
-        <div onclick="applyTheme('#1f2937')" style="height:36px;border-radius:var(--rsm);background:#1f2937;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">Gelap</div>
-      </div>
-    </div>
+function hapusKategori(id){
+  const produkPakai=produkList.filter(p=>p.jenis===id).length;
+  if(produkPakai>0){
+    alert(`Kategori ini digunakan oleh ${produkPakai} produk. Pindahkan produk ke kategori lain dulu sebelum menghapus.`);
+    return;
+  }
+  if(!confirm('Hapus kategori ini?')) return;
+  kategoriList=kategoriList.filter(x=>x.id!==id);
+  saveAll(); renderFilterTabs(); renderKategoriListAdmin(); renderKategoriSelect();
+  notif('🗑️ Kategori dihapus');
+}
 
-    <!-- TAB MEDIA -->
-    <div id="st-media" style="display:none">
-      <div style="font-size:13px;font-weight:600;margin-bottom:8px">Banner / Hero Image</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Tampil di halaman utama di atas katalog. Bisa foto atau video.</div>
-      <div id="st-banner-preview" onclick="document.getElementById('st-banner-input').click()"
-        style="width:100%;height:150px;background:linear-gradient(135deg,#dbeafe,#ede9fe);border:2px dashed var(--border);
-        border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;
-        cursor:pointer;overflow:hidden;position:relative">
-        <img id="st-banner-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
-        <video id="st-banner-vid" autoplay muted loop style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
-        <div id="st-banner-ph" style="text-align:center">
-          <div style="font-size:36px;margin-bottom:6px">🖼️</div>
-          <div style="font-size:13px;color:var(--text2)">Tap untuk pilih foto / video</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">JPG, PNG, MP4 | Max 10MB</div>
-        </div>
-      </div>
-      <input type="file" id="st-banner-input" accept="image/*,video/*" style="display:none" onchange="previewBanner()">
-      <input type="hidden" id="st-banner-data" value="">
-      <input type="hidden" id="st-banner-type" value="">
-      <button id="st-banner-clear" onclick="clearBanner()" style="display:none;margin-top:6px;background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer">✕ Hapus banner</button>
-    </div>
+// ============================================================
+// INIT
+// ============================================================
+window.onload=function(){
+  const saved=localStorage.getItem('tk_user');
+  if(saved){ currentUser=JSON.parse(saved); afterLogin(); }
+  else { document.getElementById('page-login').classList.add('active'); }
+};
 
-    <!-- TAB TEKS -->
-    <div id="st-teks" style="display:none">
-      <label>Teks hero (judul besar di banner)</label>
-      <input type="text" id="st-hero-text" placeholder="Selamat Datang di Toko Kain Kami">
-      <label>Sub-teks hero</label>
-      <input type="text" id="st-hero-sub" placeholder="Temukan kain berkualitas untuk produksi Anda">
-      <label>Pesan sapaan WA customer</label>
-      <textarea id="st-wa-greeting" placeholder="Halo, saya ingin bertanya..." style="min-height:60px"></textarea>
-      <label>Teks footer</label>
-      <input type="text" id="st-footer" placeholder="Toko Kain - Produksi Berkualitas">
-    </div>
-
-    <button class="btn btn-primary" style="margin-top:16px" onclick="simpanSettings()">💾 Simpan Pengaturan</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-settings')">Tutup</button>
-  </div>
-</div>
-
-<!-- MODAL KELOLA KATEGORI -->
-<div class="modal-overlay" id="modal-kategori">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>🏷️ Kelola Kategori Kain</h2>
-    <div id="kategori-list-admin"></div>
-    <div style="background:var(--bg);border-radius:var(--rsm);padding:12px;margin-top:12px">
-      <div style="font-size:13px;font-weight:600;margin-bottom:10px">+ Tambah Kategori Baru</div>
-      <label>Nama kategori *</label>
-      <input type="text" id="kat-nama" placeholder="Contoh: Linen">
-      <label>Emoji icon</label>
-      <input type="text" id="kat-icon" placeholder="🧵" value="🧵" maxlength="2">
-      <label>Foto kategori (opsional)</label>
-      <div id="kat-foto-preview" onclick="document.getElementById('kat-foto-input').click()"
-        style="width:100%;height:100px;background:var(--bg);border:2px dashed var(--border);border-radius:var(--rsm);
-        display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;margin-top:4px">
-        <img id="kat-foto-img" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
-        <div id="kat-foto-ph" style="text-align:center">
-          <div style="font-size:24px">📷</div>
-          <div style="font-size:11px;color:var(--text3)">Tap untuk pilih foto</div>
-        </div>
-      </div>
-      <input type="file" id="kat-foto-input" accept="image/*" style="display:none" onchange="previewKatFoto()">
-      <input type="hidden" id="kat-foto-data" value="">
-      <input type="hidden" id="kat-edit-id" value="">
-      <button class="btn btn-success" style="margin-top:10px" onclick="simpanKategori()">💾 Simpan Kategori</button>
-    </div>
-    <button class="btn btn-secondary" style="margin-top:8px" onclick="closeModal('modal-kategori')">Tutup</button>
-  </div>
-</div>
-
-<!-- MODAL REQUEST SAMPLE -->
-<div class="modal-overlay" id="modal-sample">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>🧪 Request Sample Kain</h2>
-    <div style="background:#fce7f3;border-radius:var(--rsm);padding:10px;margin-bottom:12px;font-size:12px;color:#9d174d">
-      Sample gratis untuk order pertama. Ongkir ditanggung customer.
-    </div>
-    <label>Produk yang diminati</label>
-    <select id="smp-produk">
-      <option value="">-- Pilih produk --</option>
-    </select>
-    <label>Atau deskripsikan kain yang diinginkan</label>
-    <textarea id="smp-desc" placeholder="Contoh: kain kaos cotton 30s, warna putih polos..." style="min-height:70px"></textarea>
-    <label>Tujuan penggunaan</label>
-    <input type="text" id="smp-tujuan" placeholder="Contoh: kaos seragam, baju anak, dll">
-    <label>Alamat pengiriman sample</label>
-    <textarea id="smp-alamat" placeholder="Alamat lengkap..." style="min-height:60px"></textarea>
-    <button class="btn btn-purple" style="margin-top:14px" onclick="kirimSample()">Kirim Request Sample</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-sample')">Batal</button>
-  </div>
-</div>
-
-<!-- MODAL MASUKAN -->
-<div class="modal-overlay" id="modal-masukan">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <h2>💡 Kirim Masukan</h2>
-    <label>Kategori masukan</label>
-    <select id="mk-kategori">
-      <option value="produk">Produk / Kualitas Kain</option>
-      <option value="harga">Harga</option>
-      <option value="layanan">Layanan</option>
-      <option value="pengiriman">Pengiriman</option>
-      <option value="lain">Lainnya</option>
-    </select>
-    <label>Masukan Anda</label>
-    <textarea id="mk-isi" placeholder="Tulis masukan atau saran Anda untuk kami..." style="min-height:100px"></textarea>
-    <label>Rating (opsional)</label>
-    <div id="star-rating" style="display:flex;gap:4px;margin-top:4px">
-      <span class="star" onclick="setRating(1)" id="star-1">★</span>
-      <span class="star" onclick="setRating(2)" id="star-2">★</span>
-      <span class="star" onclick="setRating(3)" id="star-3">★</span>
-      <span class="star" onclick="setRating(4)" id="star-4">★</span>
-      <span class="star" onclick="setRating(5)" id="star-5">★</span>
-    </div>
-    <button class="btn btn-primary" style="margin-top:14px" onclick="kirimMasukan()">Kirim Masukan</button>
-    <button class="btn btn-secondary" onclick="closeModal('modal-masukan')">Batal</button>
-  </div>
-</div>
-
-<!-- MODAL KELUHAN -->
-<div class="modal-overlay" id="modal-keluhan">
-  <div class="modal">
-    <div class="modal-handle"></div><h2>📢 Laporkan Keluhan</h2>
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
+});
+</script>
+</body>
+</html><h2>📢 Laporkan Keluhan</h2>
     <div style="background:#fee2e2;border-radius:var(--rsm);padding:10px;margin-bottom:12px;font-size:12px;color:#991b1b">
       Kami akan menangani keluhan Anda dalam 1x24 jam kerja.
     </div>
