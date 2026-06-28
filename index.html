@@ -844,14 +844,25 @@ function loginCustomer(){
 }
 
 function loginAdmin(){
-  const u=document.getElementById('adm-user').value.trim();
-  const p=document.getElementById('adm-pass').value;
-  if(u===ADMIN_USER&&p===ADMIN_PASS){
-    currentUser={type:'admin',nama:'Admin'};
+  var u=document.getElementById('adm-user').value.trim();
+  var p=document.getElementById('adm-pass').value;
+  // Check all admin accounts
+  var accounts=[
+    {user:'admin',   pass:'kain2024',   role:'owner',   nama:'Owner'},
+    {user:'katalog', pass:'katalog123', role:'katalog', nama:'Admin Katalog'}
+  ];
+  var acc=null;
+  for(var i=0;i<accounts.length;i++){
+    if(accounts[i].user===u && accounts[i].pass===p){ acc=accounts[i]; break; }
+  }
+  if(acc){
+    currentUser={type:'admin', role:acc.role, nama:acc.nama, user:u};
     localStorage.setItem('tk_user',JSON.stringify(currentUser));
     closeModal('modal-admin-login');
     afterLogin();
-  } else { alert('Username atau password salah!'); }
+  } else {
+    alert('Username atau password salah!');
+  }
 }
 
 function afterLogin(){
@@ -881,7 +892,7 @@ function afterLogin(){
     if(lb2) lb2.textContent=currentUser.nama;
     if(navPesanan) navPesanan.style.display='none';
     if(navLayanan) navLayanan.style.display='none';
-  } else {
+  } else if(currentUser.role==='customer' || !currentUser.role){
     var e3=document.getElementById('profil-customer');
     if(e3) e3.style.display='block';
     var pn=document.getElementById('profil-nama');
@@ -897,6 +908,8 @@ function logout(){
   if(!confirm('Yakin mau logout?')) return;
   currentUser=null;
   localStorage.removeItem('tk_user');
+  // Clear stale session
+  try{ localStorage.removeItem('tk_keranjang'); }catch(e){}
   document.getElementById('bottom-nav').style.display='none';
   document.getElementById('admin-bar').style.display='none';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -1379,8 +1392,7 @@ function kirimKeluhan(){
   renderFeedbackList();
 }
 
-function renderFeedbackList(){
-  const el=document.getElementById('feedback-list');
+function renderFeedbackList(){const el=document.getElementById('feedback-list');
   let list=feedbackList;
   if(currentUser?.type==='customer') list=list.filter(f=>f.customer.wa===currentUser.wa);
   if(!list.length){ el.innerHTML='<div class="empty"><div class="ico">💬</div><p>Belum ada pengajuan</p></div>'; return; }
@@ -1392,7 +1404,8 @@ function renderFeedbackList(){
       <div style="font-size:12px;color:var(--text2);margin-bottom:4px">👤 ${f.customer.nama} | 📅 ${tglFmt(f.tgl)}</div>
       <div style="font-size:13px;color:var(--text)">${(f.isi||f.desc||f.detail||'').substring(0,60)}...</div>
       ${f.rating?`<div style="font-size:14px;margin-top:4px">${'★'.repeat(f.rating)}${'☆'.repeat(5-f.rating)}</div>`:''}
-    </div>`).join('');}
+    </div>`).join('');
+}
 
 function showFeedbackDetail(id){
   const f=feedbackList.find(x=>x.id===id); if(!f) return;
